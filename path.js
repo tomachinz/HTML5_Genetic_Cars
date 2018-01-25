@@ -29,7 +29,7 @@ function cw_createFloorTile(position, angle) {
   var body = world.CreateBody(body_def);
   fix_def = new b2FixtureDef();
   fix_def.shape = new b2PolygonShape();
-  fix_def.friction = 0.5;
+  fix_def.friction = 0.5; // original 0.5 
 
   var coords = new Array();
   coords.push(new b2Vec2(0,0));

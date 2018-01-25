@@ -110,7 +110,7 @@ function ghost_draw_frame(ctx, ghost) {
 
   for (var i = 0; i < frame.wheels.length; i++){
     for (w in frame.wheels[i]){
-      ghost_draw_circle(ctx, frame.wheels[i][w].pos, frame.wheels[i][w].rad, frame.wheels[i][w].ang);
+      //ghost_draw_circle(ctx, frame.wheels[i][w].pos, frame.wheels[i][w].rad, frame.wheels[i][w].ang);
     }
   }
 
@@ -131,11 +131,11 @@ function ghost_get_frame(car) {
     wheels  : [],
     pos     : {x: car.getPosition().x, y: car.getPosition().y}
   };
-  
+
   for (var i = 0; i < car.wheels.length; i++){
     out.wheels[i] = ghost_get_wheel(car.wheels[i]);
   }
-  
+
   return out;
 }
 

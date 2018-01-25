@@ -1,14 +1,20 @@
+
+
+
+
+
 // Global Vars
 var debug = true;
 var ghost;
 
-var timeStep = 1.0 / 60.0;
 
 var doDraw = true;
 var cw_paused = false;
 
 var box2dfps = 60;
 var screenfps = 60;
+var timeStep = 1.0 / 60.0;
+
 
 var debugbox = document.getElementById("debug");
 
@@ -32,7 +38,7 @@ var minimapscale = 3;
 var minimapfogdistance = 0;
 var fogdistance = document.getElementById("minimapfog").style;
 
-var generationSize = 25;
+var generationSize = 12;
 var cw_carArray = new Array();
 var cw_carGeneration = new Array();
 var cw_carScores = new Array();
@@ -75,8 +81,9 @@ var wheelMaxDensity = 100;
 var wheelMinDensity = 30;
 
 var velocityIndex = 0;
-var deathSpeed = 0.1; // original was 0.1
+var deathSpeed = 0.1; // original was 0.1 or maybe 10.0
 var max_car_health = box2dfps * 10;
+var max_wheels = 6;
 var car_health = max_car_health;
 
 var motorSpeed = 30;
@@ -261,8 +268,11 @@ function cw_createChassisPart(body, vertex1, vertex2, density) {
   fix_def.filter.groupIndex = -1;
   fix_def.shape.SetAsArray(vertex_list,3);
 
+
   body.CreateFixture(fix_def);
 }
+
+
 
 function cw_createChassis(vertex_list, density) {
   var body_def = new b2BodyDef();
@@ -326,7 +336,7 @@ function newRandomPattern() {
   var img = document.createElement("img");
   img.src = skin.toDataURL("image/png");
   //img.src = "http://www.funk.co.nz/images/nav/funk-logo-140px.png"; // skin.toDataURL("image/png");
-  logger("Image: " + img.src);
+  //logger("Image: " + img.src);
   return img;
   // return ctx.createPattern(img,"repeat");
 }
@@ -335,9 +345,9 @@ function cw_createRandomCar() {
   var v = [];
   var car_def = new Object();
 
-  //car_def.
-  car_def.wheelCount = Math.round(Math.random()*4)+1;
-  //logger(car_def.wheelCount);
+  car_def.wheelCount = 4;
+  // car_def.wheelCount = Math.round(Math.random()* max_wheels-1)+1; // possibly this is the max wheel count
+  logger(car_def.wheelCount);
   car_def.wheel_radius = [];
   car_def.wheel_density = [];
   car_def.wheel_vertex = [];
@@ -914,7 +924,7 @@ function exportText() {
       return true;
     }
   }
-  download(csvContent, 'csv file.csv', 'text/csv');
+  download(csvContent, 'csv-file.txt', 'text/csv');
   return r;
 }
 
@@ -1165,7 +1175,48 @@ function cw_init() {
   cw_generationZero();
   cw_runningInterval = setInterval(simulationStep, Math.round(1000/box2dfps));
   cw_drawInterval    = setInterval(cw_drawScreen,  Math.round(1000/screenfps));
+
+
+
+
+
+
+
 }
+function startTheListeners(){
+
+   b2Vec2 = Box2D.Common.Math.b2Vec2,
+      b2BodyDef = Box2D.Dynamics.b2BodyDef,
+      b2Body = Box2D.Dynamics.b2Body,
+      b2FixtureDef = Box2D.Dynamics.b2FixtureDef,
+      b2Fixture = Box2D.Dynamics.b2Fixture,
+      b2World = Box2D.Dynamics.b2World,
+      b2MassData = Box2D.Collision.Shapes.b2MassData,
+      b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape,
+      b2CircleShape = Box2D.Collision.Shapes.b2CircleShape,
+      b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
+
+
+  listener = new Box2D.Dynamics.b2ContactListener;
+  listener.BeginContact = function(contact) {
+    //logger("Hit!" + contact.GetFixtureA().GetBody().GetUserData());
+    //logger("Hit!");
+  }
+  listener.EndContact = function(contact) {
+    //logger("Hit!" + contact.GetFixtureA().GetBody().GetUserData());
+  }
+  listener.PostSolve = function(contact, impulse) {
+    //logger("Hit!" + contact.GetFixtureA().GetBody().GetUserData());
+
+  }
+  listener.PreSolve = function(contact, oldManifold) {
+    //logger(contact.GetFixtureA().GetBody().GetUserData());
+
+  }
+  this.world.SetContactListener(listener);
+
+}
+
 
 function relMouseCoords(event){
     var totalOffsetX = 0;
